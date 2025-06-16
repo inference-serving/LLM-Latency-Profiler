@@ -59,19 +59,20 @@ def get_hardware_info(device):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", type=str, default="facebook/opt-1.3b", help="HuggingFace model name")
+    parser.add_argument("--model", type=str, default="facebook/opt-125m", help="HuggingFace model name")
     parser.add_argument("--prompt", type=str, default="Once upon a time", help="Prompt for generation")
     parser.add_argument("--max_new_tokens", type=int, default=50, help="Number of tokens to generate")
     parser.add_argument("--dtype", type=str, default="float16", help="Data type (e.g., float32, float16, bfloat16)")
     args = parser.parse_args()
 
     # Set device and dtype
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cpu")
     torch_dtype = getattr(torch, args.dtype)
 
     # Load model and tokenizer
     tokenizer = AutoTokenizer.from_pretrained(args.model)
-    model = AutoModelForCausalLM.from_pretrained(args.model, device_map="auto", torch_dtype=torch_dtype)
+    model = AutoModelForCausalLM.from_pretrained(args.model, device_map="cpu", torch_dtype=torch_dtype)
     model.eval()
 
     # Tokenize
